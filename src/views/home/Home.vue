@@ -1,20 +1,25 @@
 <template>
 <div id="home">
-<nav-bar class="home-nav">
-    <div slot='center'>购物车</div>
-</nav-bar>  
+<nav-bar class="home-nav"><div slot='center'>购物车</div></nav-bar>  
+<tab-control :titles="['流行','新款','精选']" 
+              @tabClick="tabClick"
+              ref="tabcontrol1"
+              class="tab-control"
+              v-show="isfixed"/>
 <scroll class="content" 
         ref="scroll" 
         :probe-type='3' 
         @scroll="controlScroll" 
         :pull-up-load="true" 
         @pullingUp="loadmode">
-<home-swiper :banner="banner" />
+<home-swiper :banner="banner" @swiperImageLoad="swiperImageLoad" />
 <recommend-view :recommend="recommend" />
 <feature-view />
 <tab-control :titles="['流行','新款','精选']" 
-              class="tab-control"
-              @tabClick="tabClick"/>
+              @tabClick="tabClick"
+              ref="tabcontrol2"
+              :class="{fixed:isfixed}"
+              />
 <goods-list :goods="goods[currentType].list" />
 </scroll>
 <back-top @click.native="backclick"  v-show="isshow"  />
@@ -56,7 +61,11 @@ export default {
                 'sell':{page:0,list:[]},
             },
             currentType:'pop',
-            isshow:false
+            isshow:false,
+            tabOffsetTop:0,
+            istabshow:false,
+            isfixed:false,
+            saveY:0
         }
     },
     created () {
@@ -64,6 +73,20 @@ export default {
         this.getHomeGoods('pop')
         this.getHomeGoods('new')
         this.getHomeGoods('sell')
+    },
+    mounted () {
+        // this.tabOffsetTop=this.$refs.tabcontrol2.$el.offsetTop
+        
+    },
+    activated () {
+        this.$refs.scroll.scroll.scrollTo(0,this.saveY,0)
+        this.$refs.scroll.scroll.refresh()
+        // console.log('123');
+    },
+    deactivated () {
+        this.saveY = this.$refs.scroll.scroll.y
+        // console.log(this.saveY);
+        // this.saveY=-1000
     },
     methods: {
         tabClick(index){
@@ -78,7 +101,9 @@ export default {
                 this.currentType='sell'
                 break
             }
-           
+           this.$refs.tabcontrol1.currentIndex=index
+           this.$refs.tabcontrol2.currentIndex=index
+           console.log(this.$refs.tabcontrol1.currentType+"  "+this.$refs.tabcontrol2.currentType);
         },
          backclick(){
             //  console.log('sasdasd');
@@ -86,12 +111,26 @@ export default {
          },
          controlScroll(position){
              this.isshow = (-position.y) > 1000
+             this.isfixed= (-position.y) > this.tabOffsetTop
+            //  this.istabshow= (-position.y) > this.$refs.tabcontrol2.$el.offsetTop
+            //  console.log(this.istabshow);
             // console.log(position);
+            // if ((-position.y) > this.$refs.tabcontrol2.$el.offsetTop) {
+            //     this.istabshow=true
+            //     console.log(this.istabshow+"  "+-position.y+"  "+this.$refs.tabcontrol2.$el.offsetTop);
+            // }else if((-position.y) < this.$refs.tabcontrol2.$el.offsetTop){
+            //     this.istabshow=false
+            //     console.log(this.istabshow +"  "+-position.y+"  "+this.$refs.tabcontrol2.$el.offsetTop);
+            // }
          },
          loadmode(){
              console.log("商家加载更多");
              this.getHomeGoods(this.currentType)
              this.$refs.scroll.scroll.refresh()
+         },
+         swiperImageLoad(){
+            //  console.log(this.$refs.tabcontrol2.$el.offsetTop);
+            this.tabOffsetTop=this.$refs.tabcontrol2.$el.offsetTop
          },
         // -----------------网络请求相关操作----------------------------------
         getHomeMultidata(){
@@ -115,22 +154,29 @@ export default {
 </script>
 <style scoped>
     #home{
-       padding-top: 44px; 
+       /* padding-top: 44px;  */
        position: relative;
     }
     .home-nav{
         background-color: var(--color-tint);
         color: #fff;
-        position: fixed;
+        /* position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        z-index: 9;
+        z-index: 9; */
     }
     .tab-control{
-        position: sticky;
-        top: 40px;
+        /* position: sticky;
+        top: 40px; */
+        position: relative;
         z-index: 9;
+    }
+    .fixed{
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 44px;
     }
     .content{
         overflow: hidden; 

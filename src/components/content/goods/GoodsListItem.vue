@@ -1,6 +1,6 @@
 <template>
-  <div class="GoodsListItem">
-     <a :href="goodslist.link"><img :src="goodslist.show.img" alt=""></a> 
+  <div class="GoodsListItem" @click="ItemClick">
+     <img :src="showimg" alt=""> 
      <div class="goodsinfo">
          <p>{{goodslist.title}}</p>
          <span class="price">{{goodslist.price}}</span>
@@ -18,6 +18,18 @@ export default {
             default(){
                 return {}
             }
+        }
+    },
+    computed: {
+        showimg(){
+            return this.goodslist.image || this.goodslist.show.img
+        }
+    },
+    methods: {
+        ItemClick(){
+            // console.log('-------');
+            const getid= this.goodslist.iid || this.goodslist.item_id
+            this.$router.push('/detail/'+getid)
         }
     }
 }
