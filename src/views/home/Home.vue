@@ -124,7 +124,7 @@ export default {
             // }
          },
          loadmode(){
-             console.log("商家加载更多");
+            //  console.log("商家加载更多");
              this.getHomeGoods(this.currentType)
              this.$refs.scroll.scroll.refresh()
          },

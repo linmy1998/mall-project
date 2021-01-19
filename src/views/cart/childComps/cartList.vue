@@ -28,6 +28,7 @@
       }
     },
    activated () {
+    //  刷新页面被渲染后scroll可滚动的高度
        this.$refs.scroll.scroll.refresh()
    }
 	}

@@ -91,19 +91,24 @@ export default {
     },
    
     methods: {
+        // 切换tab-bar的种类高光
         Itemclick(index){
             this.currentindex=index
+        // 回到离开前的位置
             this.$refs.scroll.scroll.scrollTo(0, -this.themeTops[index], 100)
         },
         backclickhome(){
+            // 返回上一步操作
             this.$router.back()
         },
         imageLoad(){
+            // 页面渲染时，刷新页面的最新高度
            this.$refs.scroll.scroll.refresh()
            this.getThemeTopY()
         },
         contentScroll(position){
             // console.log(position);
+            // 点击tab-bar定位到相应的位置
             const positionY=-position.y
             const len=this.themeTops.length
             for (let i = 0; i < len; i++) {
@@ -114,6 +119,7 @@ export default {
                 }
                 
             }
+            // 当滚动到一定的高度，显示回到顶部按钮
             this.isshow = (-position.y) > 1000
         },
         backclick(){
@@ -122,12 +128,14 @@ export default {
         },
         addToCart(){
             // console.log('加入购物车');
+            // 创建一个类来存储，点击添加商品在购物车需要显示的信息
             const product={}
             product.image=this.topimage[0]
             product.title=this.goods.title
             product.desc=this.goods.desc
             product.price=this.goods.nowPrice
             product.iid=this.iid
+            // 显示toast
             this.$store.dispatch('addCart',product).then(res=>{
                 // console.log(this.$toast);
                 // this.$toast.show(res,2000)
@@ -166,7 +174,7 @@ export default {
             
             this.detailrecommend=res.data.list
         })
-
+        // 记录每个组件模块的高度
         this.getThemeTopY=debouce(()=>{
             	    this.themeTops = []
         this.themeTops.push(this.$refs.base.$el.offsetTop)

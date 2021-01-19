@@ -36,6 +36,9 @@ export default {
     }
     },
     created () {
+      // 组件被创建时，向服务器请求数据
+      // 1.获取分类的种类列表
+      // 2.遍历列表向分类的类中相加属性
        getCategory().then(res=>{
            this.categories=res.data.category.list
             for (let i = 0; i < this.categories.length; i++) {
@@ -61,14 +64,6 @@ export default {
       }
     },
    methods: {
-    //     _getCategory() {
-	// 	    getCategory().then(res => {
-	// 	      // 1.获取分类数据
-	// 	      this.categories = res.data.category.list
-    //       // 2.初始化每个类别的子数据
-         
-    //     })
-    //   },
        _getSubcategories(index) {
         this.currentIndex = index;
 		    const mailKey = this.categories[index].maitKey;

@@ -20,6 +20,7 @@ export default {
     name:'cartBottomBar',
     computed: {
         totalPrice(){
+            // 1.返回被选中的商品个数
             return '￥' + this.$store.state.cartList.filter(item=>{
                 return item.checked
             }).reduce((preValue,item)=>{
@@ -27,10 +28,13 @@ export default {
             },0).toFixed(2)
         },
         checkLength(){
+            // 被选中商品的个数
             return this.$store.state.cartList.filter(item=>item.checked).length
         },
         isSelectAll(){
+            // 若被选中的商品个数为0,则全选按钮为false状态
             if(this.$store.state.cartList.length === 0) return false
+            // 点击全选按钮，找出被未选中的按钮，再将他选中
             return !this.$store.state.cartList.find(item => !item.checked)
         }
     },
